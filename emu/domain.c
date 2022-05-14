@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : domain.c
- *   Author : Neng-Fa ZHOU Copyright (C) 1994-2021
+ *   Author : Neng-Fa ZHOU Copyright (C) 1994-2022
  *   Purpose: Primitives on finite domains
 
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -2925,7 +2925,7 @@ int c_CLPFD_ADD_AC_ccc() {
     Y = ARG(2, 3); DEREF_NONVAR(Y);
     Z = ARG(3, 3); DEREF_NONVAR(Z);
 
-	//	printf("=> ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n");
+    //  printf("=> ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n");
 
     if (!IS_SUSP_VAR(X)) return BP_TRUE;
     dv_ptr_x = (BPLONG_PTR)UNTAGGED_TOPON_ADDR(X);
@@ -2991,7 +2991,7 @@ int c_CLPFD_ADD_AC_ccc() {
         elmZ++;
     }
 
-	//	printf("<= ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n"); 
+    //  printf("<= ADD_AC "); write_term(X); printf(" + "); write_term(Y); printf(" = "); write_term(Z); printf("\n"); 
 
     return BP_TRUE;
 }

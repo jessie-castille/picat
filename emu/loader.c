@@ -1,6 +1,6 @@
 /********************************************************************
  *   File   : loader.c
- *   Author : Updated by Neng-Fa ZHOU 1994-2021
+ *   Author : Updated by Neng-Fa ZHOU 1994-2022
 
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -80,7 +80,7 @@ void IGUR(int i);  /* see https://stackoverflow.com/a/16245669/490291 */
     }
 
 #define CHECK_PCODE(ptr, size)                                          \
-    if ((CHAR_PTR)ptr + 1000 + size >= (CHAR_PTR)parea_water_mark) {    \
+    if ((CHAR_PTR)ptr + 1000 + size >= (CHAR_PTR)parea_up_addr) {       \
         myquit(PAREA_OVERFLOW, "ld");                                   \
     }
 
@@ -281,13 +281,16 @@ int loader(file, file_type, load_damon)
         printf("file %s not exist\n", file);
         return 1;
     }
-    /* printf("\n     ...... loading file %s curr_fence=%x\n", file,curr_fence); */
+    // printf("\n     ...... loading file %s curr_fence=%x\n", file,curr_fence); 
 
     while ((eof_flag = READ_DATA(&magic, 1)) == 0) {
         if (load_bytecode_header() == BP_ERROR)
             return 1;
 
-        total_size = sizeof(BPLONG)*text_bytes + index_bytes + psc_bytes + 1000;
+        //              printf("text_bytes = %lx, index_bytes = %lx psc_bytes = %lx\n", text_bytes, index_bytes, psc_bytes);
+                
+        total_size = sizeof(BPLONG)*(text_bytes + index_bytes + psc_bytes) + 10000;
+        //              printf("total_size = %lx water_mark = %lx\n", (CHAR_PTR)curr_fence+total_size, parea_water_mark);
         if ((CHAR_PTR)curr_fence+total_size > (CHAR_PTR)parea_water_mark) {
             int success = 0;
             if (total_size > parea_size) parea_size = total_size;
@@ -347,7 +350,7 @@ int load_syms(file_type)
     BYTE temp_len;
     BYTE temp_arity;
 
-    /*   printf("=> load_syms \n"); */
+    //  printf("=> load_syms \n"); 
     while (count < psc_bytes && eof_flag == 0) {
         if ((eof_flag = READ_DATA(buf_for_read, 1)))
             return 2;
@@ -499,7 +502,7 @@ int load_text()
     BPLONG n;
     SYM_REC_PTR sym_ptr;
 
-    /*   printf("==> load_text \n");*/
+    //  printf("==> load_text \n");
 
     /* set text segments chain */
     inst_addr = (BPLONG_PTR)curr_fence;
@@ -537,7 +540,7 @@ int load_hashtab()
     BPLONG count = 0;
 
     CHECK_PCODE((CHAR_PTR)inst_addr, index_bytes);
-    /*   printf("==> load_hashtab \n"); */
+    //  printf("==> load_hashtab \n"); 
     while (count < index_bytes && eof_flag == 0) {
         if ((eof_flag = READ_DATA(buf_for_read, 1)))
             return 10;
@@ -1522,7 +1525,7 @@ int c_LOAD_BYTE_CODE_FROM_BPLISTS() {
       write_term(BCHashTabs); printf("\n");
     */
 
-    total_size = sizeof(BPLONG)*text_bytes + index_bytes + psc_bytes + 1000;
+    total_size = sizeof(BPLONG)*(text_bytes + index_bytes + psc_bytes) + 10000;
     if ((CHAR_PTR)curr_fence+total_size > (CHAR_PTR)parea_water_mark) {
         int success = 0;
         if (total_size > parea_size) parea_size = total_size;
